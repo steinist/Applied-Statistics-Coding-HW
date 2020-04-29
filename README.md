@@ -10,7 +10,9 @@ Use the dataset Demographics_State.csv, and conduct the following data analysis 
 ### Homework 2
 In this assignment, you will compare the two estimators. In the following questions, we assume that λ = 10.
 1.Generate n = 10 independent Poisson(λ) random variables, calculate the sample mean (you can use rpois(n = , lambda = ) function in R, where n is the total number of random varables generated and lambda is the parameter λ). Do the above 1000 times, then you have 1000 observations of the sample mean(each of them is calculated from n = 10 independent Poisson(λ) random variables.) Generate the boxplot and histogram of the 1000 observation of sample means.
+
 2. For n= 10,repeat Part 1 with the sample variance.
+
 3.Compare the boxplot and histogram you obtained from Part 1 and 2. Comment on the difference between them.(Hint: measure of dispersion)
 
 ### Homework 3

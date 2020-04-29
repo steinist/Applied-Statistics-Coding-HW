@@ -1,0 +1,87 @@
+---
+title: "HM4"
+author: "Steven Indrayana ISTIMUR"
+output:
+  pdf_document: default
+  html_document: default
+Due date: April 26th, 2020
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Coding Howework (submmite the pdf file to Canvas)
+Here we are going to test a couple of hypotheses about the Old Faithful data
+in \text{R}. Remember, this is the \verb+faithful+ data frame that is built in to R. You can use \verb+data(faithful)+ to load data set. First split faithful into two separate data frames: (1) those entries with eruption times less than 3 minutes
+(\verb+eruptions < 3+) and (2) those entries with eruption times greater than or equal
+to 3 minutes (\verb+eruptions >= 3+). Answer the following about the entry wait time
+(\verb+waiting+):
+
+(a). For the entries with short eruption times, you want to test the hypothesis that the associated waiting last on average less than 60 minutes. What is the null hypothesis?
+What is the alternative hypothesis? (Write your own code)
+
+(b). Give \verb+R+ commands to compute the statistic that you used in (a) and the resulting p-value. What values did you get? Would you reject the null hypothesis
+at the $\alpha = 0.05$ level?
+
+(c). For the entries with long eruption times, you want to test the hypothesis that the
+associated waiting time last on average shorter than 80 minutes. What is the null
+hypothesis? What is the alternative hypothesis? (Write your own code)
+
+(d). Give \verb+R+ commands to compute the statistic you used in (c) and the resulting p-value to test the hypothesis you came up with in part (c).What values did you get? Would you reject the null hypothesis at the $\alpha = 0.05$ level?
+
+
+(a)
+```{r sample a}
+# input your r code here
+data(faithful)
+short_waiting <- subset(faithful, eruptions < 3)$waiting
+
+print("Null Hypothesis H0: The short eruption wait time last on average for 60 minutes")
+
+print("Alternate Hypothesis H1: The short eruption wait time last on average less than 60 minutes")
+```
+
+(b)
+```{r sample b}
+# input your r code here
+alpha <- 0.05
+
+t <- (60 - mean(short_waiting))/(sd(short_waiting)/sqrt(length(short_waiting)))
+cat("The statistic is", t)
+
+pvalue <- pt(t,length(short_waiting)-1,lower.tail = F)
+cat("The p-value is: ", pvalue)
+
+if (pvalue > alpha){
+  print("We fail to reject H0 because p-value > alpha")
+}else{
+  print("We reject H0 because p-value < alpha")
+}
+```
+
+(c)
+```{r sample c}
+# input your r code here
+long_waiting <- subset(faithful, eruptions >= 3)$waiting
+print("Null Hypothesis H0: The long eruption wait time last on average for 80 minutes")
+
+print("Alternate Hypothesis H1: The long eruption wait time last on average less than 80 minutes")
+```
+
+(d)
+```{r sample d}
+# input your r code here
+alpha <- 0.05
+
+t <- (80 - mean(long_waiting))/(sd(long_waiting)/sqrt(length(long_waiting)))
+cat("The statistic is", t)
+
+pvalue <- pt(t,length(long_waiting)-1,lower.tail = F)
+cat("The p-value is: ", pvalue)
+
+if (pvalue > alpha){
+  print("We fail to reject H0 because p-value > alpha")
+}else {
+  print("We reject H0 because p-value < alpha")
+}
+```

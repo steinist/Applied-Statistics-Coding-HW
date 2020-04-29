@@ -1,0 +1,82 @@
+---
+title: "HM#1 rmarkdown"
+output: pdf_document
+author: Steven Indrayana Istimur 20554526
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Coding Howework (submmited to Canvas )
+Use the dataset Demographics_State.csv, and conduct the following data analysis in R.
+
+```{r}
+dat <- read.csv(file = 'Demographics_State.csv')
+head(dat)
+```
+
+(1) Compute the average, median, range, standard deviation and quartiles of total\_population.
+
+```{r ave med range sd quartile}
+#input your r code here
+ave = mean(dat$total_population)
+med = median(dat$total_population)
+ran = max(dat$total_population) - min(dat$total_population)
+std = sd(dat$total_population)
+qrt = quantile(dat$total_population)
+
+cat(" Average \t: ", ave, '\n',
+    "Median \t \t: ", med, '\n',
+    "Range  \t \t: ", ran, '\n',
+    "Standard Deviation \t: ", std, '\n',
+    "Quartile (Q1)\t \t: ", qrt[2],'\n',
+    "Quartile (Q2)\t \t: ", qrt[3],'\n',
+    "Quartile (Q3)\t \t: ", qrt[4])
+    
+```
+
+(2) Plot the histogram and the boxplot of total\_population.
+
+```{r histogram boxplot}
+#input your r code here
+hist(dat$total_population, 
+     main = "Histogram of Demographics State",
+     xlab = "Total Population")
+
+boxplot(dat$total_population,
+        main = "Boxplot of Total Population")
+```
+
+(3) Draw the scatter plot of total\_population versus median\_age. Compute the covariance of the two variables without and then with the built-in function; check if the results are the same.
+
+```{r covariance}
+#input your r code here
+#scatter plot
+plot(dat$median_age,
+     dat$total_population, 
+     main = "Scatter Plot of Demographics State",
+     xlab = "Median Age", 
+     ylab = "Total Population")
+```
+```{r}
+#covariance without built-in function
+cov_1 = 0
+for (i in c(1:length(dat$total_population))) {
+  cov_1 = cov_1 + 
+        ((dat$total_population[i] - mean(dat$total_population)) * 
+        (dat$median_age[i]- mean(dat$median_age)))
+}
+cov_1 = cov_1 / (length(dat$total_population)-1)
+
+
+
+#covariance built-in function
+cov_2 = cov(dat$total_population, dat$median_age)
+
+cat("The Cov(Total Population, Median Age)\n",
+    "without built-in function \t:",
+    cov_1,
+    "\n with built-in function \t \t:",
+    cov_2)
+```

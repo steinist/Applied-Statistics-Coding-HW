@@ -1,5 +1,5 @@
 # Applied-Statistics-Coding-HW
-## HKUST Fall2020 -MATH2411: Applied Statistics
+## HKUST Fall2020 - MATH2411: Applied Statistics
 
 ### Homework 1
 Use the dataset Demographics_State.csv, and conduct the following data analysis in R.

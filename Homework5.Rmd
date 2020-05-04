@@ -1,0 +1,145 @@
+---
+title: "Homework 5"
+author: "Due date: May 3rd, 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Written Howework (online assignment on Canvas)
+3 attempts are allowed. The latest grade will be kept. Each attempt leads to different question sets. Solutions will be available after deadline. Refer to  [https://en.wikipedia.org/wiki/Significant_figures](https://en.wikipedia.org/wiki/Significant_figures) for significant figure and rounding. 
+
+## Coding Howework (submmite the pdf file to Canvas)
+
+In this homework, we will be playing with the US stock data collected in the past few months. You can download the file ``stock.zip`` from Canvas. The ``.zip`` file have 4 ``.csv`` files, which includes price information of four stocks from January 23 to March 23, 2020:
+
+\begin{enumerate}
+\item \verb+VTI+ seeks to track the performance of the CRSP US Total Market Index. See (https://investor.vanguard.com/etf/profile/VTI).
+\item \verb+DIS+ : The Walt Disney Company, commonly known as Disney, see (https://thewaltdisneycompany.com/).
+\item \verb+AMD+ : Advanced Micro Devices, Inc. is a semiconductor company that developed the Ryzen CPUs and the Radeon graphic cards, see (https://www.amd.com/).
+\item \verb+ZM+ : Zoom Video Communications, Inc. is an communications technology company, which provided the software for our online lectures and meetings, see (https://zoom.us/).
+\end{enumerate}
+We have seen a particularly wild stock market in March. We will apply ANOVA to see if there is a difference in the stock return of the four stocks.
+
+To study the stock return, we will be looking at the \textbf{log return}, defined as 
+													$r_t = log(p_t/p_{t-1})$
+
+where $p_t$ is the stock price at day $t$.  We will use the closing price (the \verb+close+ column in the data) as $p_t$. 
+
+
+
+Now, answer the following questions.
+
+1. Calculate the log-return for each of the four stocks. Check if we can assume that the log return follows the normal distribution.  Use both the histogram and the Q-Q plot. (20 pt)
+```{r q1}
+# input your answer here
+VTI <- read.csv("VTI.csv")
+DIS <- read.csv("DIS.csv")
+AMD <- read.csv("AMD.csv")
+ZM <- read.csv("ZM.csv")
+library(ggplot2)
+
+#Create the log return
+VTI$log_return = 0
+DIS$log_return = 0
+AMD$log_return = 0
+ZM$log_return = 0
+
+for (i in 2:length(VTI$Close)) {
+  VTI$log_return[i] =  log(VTI$Close[i]/VTI$Close[i-1])
+  DIS$log_return[i] =  log(DIS$Close[i]/DIS$Close[i-1])
+  AMD$log_return[i] =  log(AMD$Close[i]/AMD$Close[i-1])
+  ZM$log_return[i] =  log(ZM$Close[i]/ZM$Close[i-1])
+}
+head(VTI)
+head(DIS)
+head(AMD)
+head(ZM)
+
+quantile(VTI$log_return)[2]
+
+
+VTI = data.frame(VTI,
+                 group = ifelse(VTI$log_return > quantile(VTI$log_return)[2] - 1.5*IQR(VTI$log_return) &
+                                  VTI$log_return < quantile(VTI$log_return)[4] + 1.5*IQR(VTI$log_return), 
+                                "main", "outlier"))
+DIS = data.frame(DIS,
+                 group = ifelse(DIS$log_return > quantile(DIS$log_return)[2] - 1.5*IQR(DIS$log_return) &
+                                  DIS$log_return < quantile(DIS$log_return)[4] + 1.5*IQR(DIS$log_return), 
+                                "main", "outlier"))
+AMD = data.frame(AMD,
+                 group = ifelse(AMD$log_return > quantile(AMD$log_return)[2] - 1.5*IQR(AMD$log_return) &
+                                  AMD$log_return < quantile(AMD$log_return)[4] + 1.5*IQR(AMD$log_return), 
+                                "main", "outlier"))
+ZM = data.frame(ZM,
+                 group = ifelse(ZM$log_return > quantile(ZM$log_return)[2] - 1.5*IQR(ZM$log_return) &
+                                  ZM$log_return < quantile(ZM$log_return)[4] + 1.5*IQR(ZM$log_return), 
+                                "main", "outlier"))
+
+
+#Create the histogram
+hist_VTI = ggplot(VTI, aes(x=log_return)) +
+  geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  geom_density(alpha=.2) + labs(title = "Log Return of VTI", x = "Log Return")
+hist_DIS = ggplot(DIS, aes(x=log_return)) +
+  geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  geom_density(alpha=.2) + labs(title = "Log Return of VTI", x = "Log Return")
+hist_AMD = ggplot(AMD, aes(x=log_return)) +
+  geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  geom_density(alpha=.2) + labs(title = "Log Return of VTI", x = "Log Return")
+hist_ZM = ggplot(ZM, aes(x=log_return)) +
+  geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  geom_density(alpha=.2) + labs(title = "Log Return of VTI", x = "Log Return")
+
+hist_VTI
+hist_DIS
+hist_AMD
+hist_ZM
+
+
+#Create a Q-Q Plot
+qqplot_VTI = ggplot(VTI, aes(sample=log_return, fill=group))+stat_qq()+stat_qq_line()
+qqplot_DIS = ggplot(DIS, aes(sample=log_return))+stat_qq()+stat_qq_line()
+qqplot_AMD = ggplot(AMD, aes(sample=log_return))+stat_qq()+stat_qq_line()
+qqplot_ZM = ggplot(ZM, aes(sample=log_return))+stat_qq()+stat_qq_line()
+
+qqplot_VTI
+qqplot_DIS
+qqplot_AMD
+qqplot_ZM
+
+
+```
+
+2. Use the Bartlett's test to check if we can assume that the variance from the four population is the same at significance level $\alpha = 0.1$. (10 pt)
+
+```{r q2}
+# input your answer here
+
+```
+
+3. Perform the ANOVA test at significance level $\alpha = 0.1$ without using the built-in functions.(10 pt)
+
+```{r q3}
+# input your answer here
+```
+4. Perform the ANOVA test at significance level $\alpha = 0.1$ using the built-in functions. (10 pt)
+
+```{r q4}
+# input your answer here
+```
+5. Use pair-wise $T$-test with Bonferroni adjustment to find the pairs that are significantly different in mean. (10 pt)
+
+```{r q5}
+# input your answer here
+```
+6. State your findings from this study. (5 pt)
+
+Type in your answer here:
+
+
+
+
